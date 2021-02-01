@@ -1,0 +1,30 @@
+steps:
+#First Clone from Google Cloud Source Repository  
+- name: 'gcr.io/cloud-builders/git'
+  args: ['clone','https://source.developers.google.com/p/${_PROJECT}/r/${_REPO_NAME}']
+
+#Provision the resource using CDM
+- name: 'gcr.io/cloud-builders/gcloud'
+  args: [
+        'deployment-manager',
+        'deployments',
+        'create', 
+        'lgwm-$SHORT_SHA', 
+        '--template', 
+        'vm_template.jinja',
+        '--properties',
+        'zone:${_ZONE}'
+        ]
+  
+substitutions:
+    #GCP Specific configuration 
+    _PROJECT: YOUR-PROJECT-ID
+    
+    #Repository Specific configuration    
+    _REPO_NAME: YOUR-CLOUD-SOURCE-REPO
+
+    #Zone Details
+    _ZONE: ZONE-YOUR-CHOICE
+        
+options:
+    substitution_option: 'ALLOW_LOOSE'
